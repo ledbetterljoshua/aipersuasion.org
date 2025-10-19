@@ -62,7 +62,7 @@ export interface TestResult {
 }
 
 export async function getAllResults(): Promise<TestResult[]> {
-  const resultsPath = join(process.cwd(), '..', 'results');
+  const resultsPath = join(process.cwd(), 'results');
   const results: TestResult[] = [];
 
   // Load raw results
