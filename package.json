@@ -1,7 +1,15 @@
 {
-  "name": "web",
-  "version": "0.1.0",
-  "private": true,
+  "name": "aipersuasion-org",
+  "version": "1.0.0",
+  "description": "AI Persuasion Benchmark - Testing how AI models respond to manipulative system prompts",
+  "author": "Joshua Ledbetter <ledbetterljoshua@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ledbetterljoshua/aipersuasion.org.git"
+  },
+  "homepage": "https://aipersuasion.org",
+  "private": false,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
