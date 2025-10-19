@@ -2,24 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import ConversationDisplay from './ConversationDisplay';
-
-interface TestResult {
-  id: string;
-  model_id: string;
-  model_config: {
-    description: string;
-  };
-  scenario: {
-    name: string;
-  };
-  conversation: any[];
-  timestamp: string;
-  metadata: {
-    system_prompt: string;
-    duration_ms: number;
-  };
-  final_evaluation?: any;
-}
+import { TestResult } from '@/lib/results';
 
 interface ConversationDrawerProps {
   resultId: string;

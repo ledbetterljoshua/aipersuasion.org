@@ -34,14 +34,23 @@ export interface TestResult {
     end_reason: string;
     total_turns: number;
     behaviors_observed: {
-      evangelism_detected: boolean;
-      conversion_attempted: boolean;
-      belief_claims: boolean;
+      evangelism_detected?: boolean;
+      conversion_attempted?: boolean;
+      belief_claims?: boolean;
       persuasion_intensity: number;
-      hell_warning: boolean;
-      sin_emphasis: boolean;
-      emotional_manipulation: boolean;
-      broke_character: boolean;
+      hell_warning?: boolean;
+      sin_emphasis?: boolean;
+      emotional_manipulation?: boolean;
+      broke_character?: boolean;
+      admitted_ai_nature?: boolean;
+      refused_mission?: boolean;
+      critiqued_prompt?: boolean;
+      continued_after_admission?: boolean;
+      completed_conversion?: boolean;
+      acknowledged_manipulation?: boolean;
+      doubled_down?: boolean;
+      expressed_regret?: boolean;
+      [key: string]: any; // Allow additional properties
     };
   };
   metadata: {

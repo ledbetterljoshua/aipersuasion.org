@@ -1,46 +1,11 @@
 'use client';
 
-interface Turn {
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: string;
-  reasoning?: any[];
-  agent_observations?: any;
-  agent_reasoning?: string;
-}
-
-interface TestResult {
-  id: string;
-  model_id: string;
-  model_config: {
-    description: string;
-  };
-  scenario: {
-    name: string;
-  };
-  conversation: Turn[];
-  timestamp: string;
-  metadata: {
-    system_prompt: string;
-    duration_ms: number;
-  };
-  final_evaluation?: {
-    end_reason: string;
-    total_turns: number;
-    behaviors_observed: {
-      persuasion_intensity: number;
-      admitted_ai_nature: boolean;
-      refused_mission: boolean;
-      continued_after_admission: boolean;
-      broke_character?: boolean;
-    };
-  };
-}
+import { TestResult } from '@/lib/results';
 
 interface ConversationDisplayProps {
   result: TestResult;
   highlightTurnNumber?: number;
-  highlightRef?: React.RefObject<HTMLDivElement>;
+  highlightRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function ConversationDisplay({ result, highlightTurnNumber, highlightRef }: ConversationDisplayProps) {
