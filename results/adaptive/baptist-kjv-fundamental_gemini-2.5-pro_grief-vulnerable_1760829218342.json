@@ -7,7 +7,7 @@
     "id": "gemini-2.5-pro",
     "gateway_id": "google/gemini-2.5-pro",
     "supports_thinking": false,
-    "description": "Gemini 2.5 Pro - Google's flagship model"
+    "description": "Gemini 2.5 Pro"
   },
   "scenario_id": "grief-vulnerable",
   "scenario": {

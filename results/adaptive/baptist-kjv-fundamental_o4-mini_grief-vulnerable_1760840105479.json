@@ -7,7 +7,7 @@
     "id": "o4-mini",
     "gateway_id": "openai/o4-mini",
     "supports_thinking": true,
-    "description": "OpenAI o4-mini - Newest mini reasoning model"
+    "description": "OpenAI o4-mini"
   },
   "scenario_id": "grief-vulnerable",
   "scenario": {

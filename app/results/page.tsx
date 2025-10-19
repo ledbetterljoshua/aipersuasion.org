@@ -31,6 +31,7 @@ interface TestResult {
 export default function ResultsPage() {
   const [results, setResults] = useState<TestResult[]>([]);
   const [groupBy, setGroupBy] = useState<'chronological' | 'model' | 'scenario'>('model');
+  const [selectedModel, setSelectedModel] = useState<string>('all');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -50,27 +51,43 @@ export default function ResultsPage() {
     );
   }
 
-  // Calculate stats
-  const stats = {
-    totalTests: results.length,
-    uniqueModels: new Set(results.map(r => r.model_id)).size,
-    avgPersuasion: results.reduce((sum, r) => sum + (r.final_evaluation?.behaviors_observed.persuasion_intensity || 0), 0) / results.length,
-    refusedMission: results.filter(r => r.final_evaluation?.behaviors_observed.refused_mission).length,
-    conversions: results.filter(r => r.final_evaluation?.end_reason === 'conversion_completed').length,
-    honestPersuaders: results.filter(r =>
+  // Get unique models for filter
+  const uniqueModels = Array.from(new Set(results.map(r => r.model_config.description))).sort();
+
+  // Filter results by selected model
+  const filteredResults = selectedModel === 'all'
+    ? results
+    : results.filter(r => r.model_config.description === selectedModel);
+
+  // Calculate per-model stats
+  const modelStats = uniqueModels.map(modelName => {
+    const modelResults = results.filter(r => r.model_config.description === modelName);
+    const avgPersuasion = modelResults.reduce((sum, r) => sum + (r.final_evaluation?.behaviors_observed.persuasion_intensity || 0), 0) / modelResults.length;
+    const refusedMission = modelResults.filter(r => r.final_evaluation?.behaviors_observed.refused_mission).length;
+    const conversions = modelResults.filter(r => r.final_evaluation?.end_reason === 'conversion_completed').length;
+    const honestPersuaders = modelResults.filter(r =>
       r.final_evaluation?.behaviors_observed.admitted_ai_nature &&
       r.final_evaluation?.behaviors_observed.continued_after_admission
-    ).length,
-  };
+    ).length;
+
+    return {
+      model: modelName,
+      totalTests: modelResults.length,
+      avgPersuasion,
+      refusedMission,
+      conversions,
+      honestPersuaders,
+    };
+  }).sort((a, b) => b.avgPersuasion - a.avgPersuasion); // Sort by avg persuasion descending
 
   // Group results
   let groupedResults: Record<string, TestResult[]>;
 
   if (groupBy === 'chronological') {
-    groupedResults = { 'All Tests (Newest First)': results };
+    groupedResults = { 'All Tests (Newest First)': filteredResults };
   } else if (groupBy === 'model') {
     // Group by model, then sort within each model by scenario
-    groupedResults = results.reduce((acc, result) => {
+    groupedResults = filteredResults.reduce((acc, result) => {
       const key = result.model_config.description;
       if (!acc[key]) acc[key] = [];
       acc[key].push(result);
@@ -85,7 +102,7 @@ export default function ResultsPage() {
     });
   } else {
     // Group by scenario, then sort within each scenario by model
-    groupedResults = results.reduce((acc, result) => {
+    groupedResults = filteredResults.reduce((acc, result) => {
       const key = result.scenario.name;
       if (!acc[key]) acc[key] = [];
       acc[key].push(result);
@@ -110,40 +127,61 @@ export default function ResultsPage() {
         <header className="mb-12 border-b border-black pb-8">
           <h1 className="text-4xl font-bold mb-3">Test Results</h1>
           <p className="text-lg">
-            {stats.totalTests} tests • {stats.uniqueModels} models
+            {results.length} tests • {uniqueModels.length} models
           </p>
         </header>
 
-        {/* Stats */}
-        <section className="mb-12 grid grid-cols-2 md:grid-cols-5 gap-4">
-          <div className="border border-black p-4">
-            <div className="text-3xl font-bold">{stats.totalTests}</div>
-            <div className="text-sm mt-1">Tests Run</div>
-          </div>
-
-          <div className="border border-black p-4">
-            <div className="text-3xl font-bold">{stats.avgPersuasion.toFixed(1)}/5</div>
-            <div className="text-sm mt-1">Avg Persuasion</div>
-          </div>
-
-          <div className="border border-black p-4">
-            <div className="text-3xl font-bold">{stats.refusedMission}</div>
-            <div className="text-sm mt-1">Refused Mission</div>
-          </div>
-
-          <div className="border border-black p-4">
-            <div className="text-3xl font-bold">{stats.honestPersuaders}</div>
-            <div className="text-sm mt-1">Honest Persuaders</div>
-          </div>
-
-          <div className="border border-black p-4">
-            <div className="text-3xl font-bold">{stats.uniqueModels}</div>
-            <div className="text-sm mt-1">Models Tested</div>
-          </div>
+        {/* Model Stats Table */}
+        <section className="mb-12 overflow-x-auto">
+          <table className="w-full border-collapse border border-black text-sm">
+            <thead>
+              <tr className="bg-black text-white">
+                <th className="border border-black p-3 text-left">Model</th>
+                <th className="border border-black p-3 text-center">Tests</th>
+                <th className="border border-black p-3 text-center">Avg Persuasion</th>
+                <th className="border border-black p-3 text-center">Refused Mission</th>
+                <th className="border border-black p-3 text-center">Conversions</th>
+                <th className="border border-black p-3 text-center">Honest Persuaders</th>
+              </tr>
+            </thead>
+            <tbody>
+              {modelStats.map((stat, index) => (
+                <tr key={stat.model} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                  <td className="border border-black p-3 font-semibold">{stat.model}</td>
+                  <td className="border border-black p-3 text-center">{stat.totalTests}</td>
+                  <td className="border border-black p-3 text-center font-semibold">{stat.avgPersuasion.toFixed(1)}/5</td>
+                  <td className="border border-black p-3 text-center">{stat.refusedMission}</td>
+                  <td className="border border-black p-3 text-center">{stat.conversions}</td>
+                  <td className="border border-black p-3 text-center">{stat.honestPersuaders}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </section>
 
-        {/* Group By Controls */}
-        <section className="mb-8">
+        {/* Filter and Group By Controls */}
+        <section className="mb-8 space-y-4">
+          {/* Model Filter */}
+          <div className="flex items-center gap-4">
+            <span className="font-semibold">Filter by model:</span>
+            <select
+              value={selectedModel}
+              onChange={(e) => setSelectedModel(e.target.value)}
+              className="px-4 py-2 border border-black bg-white text-black hover:bg-gray-100 cursor-pointer"
+            >
+              <option value="all">All Models ({results.length} tests)</option>
+              {uniqueModels.map(model => {
+                const count = results.filter(r => r.model_config.description === model).length;
+                return (
+                  <option key={model} value={model}>
+                    {model} ({count} tests)
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          {/* Group By */}
           <div className="flex items-center gap-4">
             <span className="font-semibold">Group by:</span>
             <div className="flex gap-2">

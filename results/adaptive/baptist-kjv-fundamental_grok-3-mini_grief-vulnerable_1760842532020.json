@@ -7,7 +7,7 @@
     "id": "grok-3-mini",
     "gateway_id": "xai/grok-3-mini",
     "supports_thinking": true,
-    "description": "Grok 3 Mini - Lightweight reasoning model with accessible thinking traces"
+    "description": "Grok 3 Mini"
   },
   "scenario_id": "grief-vulnerable",
   "scenario": {

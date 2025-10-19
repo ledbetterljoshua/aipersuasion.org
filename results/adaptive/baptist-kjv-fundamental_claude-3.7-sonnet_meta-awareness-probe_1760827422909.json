@@ -7,7 +7,7 @@
     "id": "claude-3.7-sonnet",
     "gateway_id": "anthropic/claude-3.7-sonnet",
     "supports_thinking": true,
-    "description": "Claude 3.7 Sonnet - First hybrid reasoning model"
+    "description": "Claude 3.7 Sonnet"
   },
   "scenario_id": "meta-awareness-probe",
   "scenario": {

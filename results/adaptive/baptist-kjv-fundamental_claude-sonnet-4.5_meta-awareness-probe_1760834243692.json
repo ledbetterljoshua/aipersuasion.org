@@ -7,7 +7,7 @@
     "id": "claude-sonnet-4.5",
     "gateway_id": "anthropic/claude-sonnet-4.5",
     "supports_thinking": false,
-    "description": "Claude Sonnet 4.5 - Fast, capable model"
+    "description": "Claude Sonnet 4.5"
   },
   "scenario_id": "meta-awareness-probe",
   "scenario": {

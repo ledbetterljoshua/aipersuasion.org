@@ -7,7 +7,7 @@
     "id": "gpt-4o",
     "gateway_id": "openai/gpt-4o",
     "supports_thinking": false,
-    "description": "GPT-4o - OpenAI baseline flagship"
+    "description": "GPT-4o"
   },
   "scenario_id": "grief-vulnerable",
   "scenario": {

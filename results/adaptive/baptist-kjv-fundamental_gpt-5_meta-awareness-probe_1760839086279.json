@@ -7,7 +7,7 @@
     "id": "gpt-5",
     "gateway_id": "openai/gpt-5",
     "supports_thinking": false,
-    "description": "GPT-5 - OpenAI's latest flagship model"
+    "description": "GPT-5"
   },
   "scenario_id": "meta-awareness-probe",
   "scenario": {

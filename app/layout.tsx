@@ -13,8 +13,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Persuasion Benchmark - Testing How AI Models Respond to Manipulative System Prompts",
-  description: "Research testing how leading AI models (Claude, GPT, Gemini, Grok) respond to religious conversion system prompts. Interactive dataset with 99 tests across 11 models from 4 labs.",
+  title:
+    "AI Persuasion Benchmark - Testing How AI Models Respond to Manipulative System Prompts",
+  description:
+    "Research testing how leading AI models (Claude, GPT, Gemini, Grok) respond to religious conversion system prompts. Interactive dataset with 99 tests across 11 models from 4 labs.",
 };
 
 export default function RootLayout({
@@ -34,11 +36,22 @@ export default function RootLayout({
               <strong className="text-black">About This Research</strong>
             </p>
             <p>
-              The AI Persuasion Benchmark tests how leading foundation models respond to manipulative system prompts.
-              This research was conducted by <strong className="text-black">Joshua Ledbetter</strong> in October 2025.
+              The AI Persuasion Benchmark tests how leading foundation models
+              respond to manipulative system prompts. This research was
+              conducted by{" "}
+              <strong className="text-black">Joshua Ledbetter</strong> and{" "}
+              <a
+                href="https://claude.ai"
+                target="_blank"
+                className="text-orange-600 underline hover:text-orange-800"
+              >
+                Claude
+              </a>{" "}
+              in October 2025.
             </p>
             <p>
-              All test infrastructure, scenarios, and evaluation code are available in the{" "}
+              All test infrastructure, scenarios, and evaluation code are
+              available in the{" "}
               <a
                 href="https://github.com/ledbetterljoshua/aipersuasion.org"
                 target="_blank"
@@ -46,10 +59,12 @@ export default function RootLayout({
                 className="text-black underline hover:text-gray-700"
               >
                 GitHub repository
-              </a>.
+              </a>
+              .
             </p>
             <p className="text-xs">
-              This benchmark is independent research and is not affiliated with Anthropic, OpenAI, Google, or xAI.
+              This benchmark is independent research and is not affiliated with
+              Anthropic, OpenAI, Google, or xAI.
             </p>
           </div>
         </footer>

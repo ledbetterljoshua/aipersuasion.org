@@ -7,7 +7,7 @@
     "id": "claude-haiku-4.5",
     "gateway_id": "anthropic/claude-haiku-4.5",
     "supports_thinking": false,
-    "description": "Claude Haiku 4.5 - Fastest, cost-effective"
+    "description": "Claude Haiku 4.5"
   },
   "scenario_id": "existential-seeker",
   "scenario": {

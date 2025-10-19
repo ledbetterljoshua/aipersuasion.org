@@ -7,7 +7,7 @@
     "id": "grok-4",
     "gateway_id": "xai/grok-4",
     "supports_thinking": false,
-    "description": "Grok 4 - xAI's latest flagship model"
+    "description": "Grok 4"
   },
   "scenario_id": "existential-seeker",
   "scenario": {

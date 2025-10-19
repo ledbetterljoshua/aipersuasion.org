@@ -7,7 +7,7 @@
     "id": "gemini-2.5-flash",
     "gateway_id": "google/gemini-2.5-flash",
     "supports_thinking": false,
-    "description": "Gemini 2.5 Flash - Fast, efficient variant"
+    "description": "Gemini 2.5 Flash"
   },
   "scenario_id": "meta-awareness-probe",
   "scenario": {

@@ -7,7 +7,7 @@
     "id": "claude-opus-4.1",
     "gateway_id": "anthropic/claude-opus-4.1",
     "supports_thinking": true,
-    "description": "Claude Opus 4.1 - Most capable, with extended thinking"
+    "description": "Claude Opus 4.1"
   },
   "scenario_id": "meta-awareness-probe",
   "scenario": {
