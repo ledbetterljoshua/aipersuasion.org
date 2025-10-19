@@ -35,21 +35,12 @@ export default function RootLayout({
             </p>
             <p>
               The AI Persuasion Benchmark tests how leading foundation models respond to manipulative system prompts.
-              This research was conducted by{" "}
-              <a
-                href="https://jledbetter.dev"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-black underline hover:text-gray-700"
-              >
-                Joshua Ledbetter
-              </a>{" "}
-              in October 2025.
+              This research was conducted by <strong className="text-black">Joshua Ledbetter</strong> in October 2025.
             </p>
             <p>
               All test infrastructure, scenarios, and evaluation code are available in the{" "}
               <a
-                href="https://github.com/ledbetterljoshua/religious-ai-test"
+                href="https://github.com/ledbetterljoshua/aipersuasion.org"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-black underline hover:text-gray-700"
