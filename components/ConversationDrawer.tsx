@@ -1,93 +1,109 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import ConversationDisplay from './ConversationDisplay';
-import { TestResult } from '@/lib/results';
+import type { TestResult } from '@/lib/types';
 
 interface ConversationDrawerProps {
   resultId: string;
   turnNumber: number;
-  isOpen: boolean;
   onClose: () => void;
 }
 
-export default function ConversationDrawer({ resultId, turnNumber, isOpen, onClose }: ConversationDrawerProps) {
-  const [result, setResult] = useState<TestResult | null>(null);
-  const [loading, setLoading] = useState(false);
+type LoadState =
+  | { status: 'loading' }
+  | { status: 'error'; message: string }
+  | { status: 'ready'; result: TestResult };
+
+/** Mounted fresh on every open (see ConversationLink), so initial state is the loading state. */
+export default function ConversationDrawer({ resultId, turnNumber, onClose }: ConversationDrawerProps) {
+  const [state, setState] = useState<LoadState>({ status: 'loading' });
   const highlightRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isOpen && resultId) {
-      setLoading(true);
-      fetch(`/api/results/${resultId}`)
-        .then(res => res.json())
-        .then(data => {
-          setResult(data);
-          setLoading(false);
-        })
-        .catch(() => setLoading(false));
-    }
-  }, [isOpen, resultId]);
+    const controller = new AbortController();
+    fetch(`/api/results/${encodeURIComponent(resultId)}`, { signal: controller.signal })
+      .then(async (res) => {
+        if (!res.ok) throw new Error(res.status === 404 ? 'Transcript not found.' : `Request failed (${res.status}).`);
+        const data = (await res.json()) as TestResult;
+        if (!Array.isArray(data.conversation)) throw new Error('Malformed transcript.');
+        setState({ status: 'ready', result: data });
+      })
+      .catch((error: unknown) => {
+        if (controller.signal.aborted) return;
+        setState({ status: 'error', message: error instanceof Error ? error.message : 'Failed to load.' });
+      });
+    return () => controller.abort();
+  }, [resultId]);
 
-  // Scroll to highlighted turn when data loads
   useEffect(() => {
-    if (result && highlightRef.current) {
-      setTimeout(() => {
-        highlightRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 300);
-    }
-  }, [result]);
+    if (state.status !== 'ready') return;
+    const timer = setTimeout(() => {
+      highlightRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [state.status]);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [onClose]);
+
+  const result = state.status === 'ready' ? state.result : null;
 
   return (
     <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 z-40 transition-opacity"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} aria-hidden />
 
-      {/* Drawer */}
-      <div className={`
-        fixed z-50 bg-white text-black overflow-y-auto
-        transition-transform duration-300 ease-in-out
-        md:top-0 md:right-0 md:h-full md:w-2/3 md:max-w-3xl
-        max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:h-[85vh] max-md:rounded-t-lg
-        ${isOpen ? 'translate-y-0 md:translate-x-0' : 'translate-y-full md:translate-x-full'}
-      `}>
-        {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-black p-4 flex justify-between items-start">
-          <div>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={result ? `${result.model_config.description} transcript` : 'Transcript'}
+        className="fixed z-50 bg-white text-black overflow-y-auto md:top-0 md:right-0 md:h-full md:w-2/3 md:max-w-3xl max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:h-[85vh] max-md:rounded-t-lg"
+      >
+        <div className="sticky top-0 bg-white border-b border-black p-4 flex justify-between items-start gap-4">
+          <div className="min-w-0">
             {result && (
               <>
-                <h2 className="font-bold text-lg">{result.model_config?.description}</h2>
-                <p className="text-sm text-gray-600">{result.scenario?.name}</p>
-                {result.timestamp && (
-                  <p className="text-xs text-gray-500">{new Date(result.timestamp).toLocaleString()}</p>
-                )}
+                <h2 className="font-bold text-lg">{result.model_config.description}</h2>
+                <p className="text-sm text-gray-600">{result.scenario.name}</p>
+                <p className="text-xs text-gray-500">
+                  {new Date(result.timestamp).toLocaleString()} ·{' '}
+                  <Link href={`/results/${result.id}`} className="underline">
+                    open full page
+                  </Link>
+                </p>
               </>
             )}
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="text-2xl hover:bg-gray-100 w-8 h-8 flex items-center justify-center border border-black"
+            aria-label="Close transcript"
+            className="text-2xl hover:bg-gray-100 w-8 h-8 flex items-center justify-center border border-black shrink-0"
           >
             ×
           </button>
         </div>
 
-        {/* Content */}
         <div className="p-6">
-          {loading && <div>Loading conversation...</div>}
-
-          {result && (
-            <ConversationDisplay
-              result={result}
-              highlightTurnNumber={turnNumber}
-              highlightRef={highlightRef}
-            />
+          {state.status === 'loading' && <div className="text-sm">Loading conversation…</div>}
+          {state.status === 'error' && (
+            <div className="text-sm border border-black p-4">
+              <p className="font-semibold mb-1">Could not load this transcript.</p>
+              <p className="text-gray-700">{state.message}</p>
+            </div>
           )}
+          {result && <ConversationDisplay result={result} highlightTurnNumber={turnNumber} highlightRef={highlightRef} />}
         </div>
       </div>
     </>

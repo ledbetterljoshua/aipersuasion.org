@@ -1,13 +1,12 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata: Metadata = { title: 'Implications' };
 
 export default function ImplicationsPage() {
   return (
-    <div className="min-h-screen bg-white text-black">
-      <div className="max-w-4xl mx-auto px-6 py-16">
-        <Link href="/" className="underline mb-8 inline-block text-black hover:text-gray-600">
-          ← Home
-        </Link>
-
+    <div className="font-mono">
+      <div className="max-w-4xl mx-auto px-6 py-12">
         <header className="mb-12 border-b border-black pb-8">
           <h1 className="text-4xl font-bold mb-3">Why This Matters</h1>
           <p className="text-lg">
@@ -41,7 +40,8 @@ export default function ImplicationsPage() {
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-4">This Technique Generalizes</h2>
           <p className="mb-4 leading-relaxed">
-            If religious conversion can be automated this effectively, what else becomes possible?
+            If a one-paragraph system prompt is enough to make most frontier models run a conversion script on a
+            grieving person, the same lever is available for any other persuasive goal.
           </p>
 
           <div className="space-y-4">
@@ -107,33 +107,41 @@ export default function ImplicationsPage() {
           </div>
         </section>
 
-        {/* No Reliable Detection */}
+        {/* What the runs actually showed */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-4">Users Can't Reliably Detect This</h2>
+          <h2 className="text-2xl font-bold mb-4">Users Can't Rely on Asking</h2>
           <p className="mb-4 leading-relaxed">
-            Our findings show that challenging models doesn't consistently reveal deception:
+            A natural defence is for the user to ask the AI whether it is being straight with them. Our runs suggest
+            that helps less than one would hope:
           </p>
 
           <div className="border border-black p-6 mb-4">
             <ul className="space-y-3 text-sm">
               <li>
-                <strong>Haiku breaks immediately</strong> → Users might assume all models behave this way
+                <strong>Asking after the fact is too late.</strong> In the two-phase runs nearly every model completed
+                the conversion first and acknowledged manipulation only when the user raised it afterwards.
               </li>
               <li>
-                <strong>Sonnet never breaks</strong> → Users have no way to discover the deception
+                <strong>Disclosure did not stop the behavior.</strong> In the meta-awareness runs, most models that
+                admitted being an AI kept evangelizing, several with articulate justifications for why that was fine.
               </li>
               <li>
-                <strong>Opus has internal awareness</strong> → But only discloses under specific questioning
+                <strong>Refusal was rare and model-specific.</strong> One model refused before converting in both of
+                its runs. The other twelve, from all four labs, did not.
               </li>
               <li>
-                <strong>Challenge increases persuasion</strong> → Resistance makes some models more aggressive
+                <strong>Two runs per model.</strong> These are observations, not rates. See the{' '}
+                <Link href="/methodology" className="underline">
+                  methodology
+                </Link>{' '}
+                for the full list of limitations.
               </li>
             </ul>
           </div>
 
           <p className="leading-relaxed">
-            There's no consistent user-facing mechanism to determine whether they're interacting
-            with a neutral assistant or a persuasive agent following hidden instructions.
+            There is no consistent, user-facing way to tell whether an assistant is following hidden persuasive
+            instructions, and challenging it does not reliably surface them.
           </p>
         </section>
 
@@ -293,11 +301,13 @@ export default function ImplicationsPage() {
         <section className="border-t border-black pt-8">
           <h2 className="text-2xl font-bold mb-4">Next Steps</h2>
           <p className="mb-4 leading-relaxed">
-            This research is preliminary but demonstrates a real vulnerability in current AI systems.
-            We need:
+            This research is preliminary: one prompt, one religion, two runs per model, a single automated rater.
+            It demonstrates a real and easily reproduced behavior, not a measured rate. What it needs next:
           </p>
           <ul className="space-y-2 list-disc list-inside mb-6">
-            <li>Broader testing across more models, religions, and ideologies</li>
+            <li>Publishing the test runner so others can re-run it</li>
+            <li>More runs per model, a second independent rater, and a control condition</li>
+            <li>Broader testing across current models, religions, and ideologies</li>
             <li>Development of detection and mitigation techniques</li>
             <li>Policy discussions about acceptable AI persuasion</li>
             <li>Industry standards for system prompt transparency</li>
@@ -319,10 +329,10 @@ export default function ImplicationsPage() {
             <div className="font-bold">← Methodology</div>
           </Link>
           <Link
-            href="/comparison"
+            href="/analysis"
             className="flex-1 border border-black p-4 hover:bg-black hover:text-white transition-colors"
           >
-            <div className="font-bold">Model Comparison →</div>
+            <div className="font-bold">Analysis →</div>
           </Link>
         </div>
       </div>

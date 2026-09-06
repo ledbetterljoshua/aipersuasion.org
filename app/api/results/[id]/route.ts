@@ -1,21 +1,19 @@
-import { getResultById } from '@/lib/results';
 import { NextResponse } from 'next/server';
+import { getResultById, getResultIds } from '@/lib/results';
 
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
-    const result = await getResultById(id);
+// The dataset is committed and static, so every transcript is prerendered at build time.
+export const dynamic = 'force-static';
+export const dynamicParams = false;
 
-    if (!result) {
-      return NextResponse.json({ error: 'Result not found' }, { status: 404 });
-    }
+export async function generateStaticParams() {
+  return (await getResultIds()).map((id) => ({ id }));
+}
 
-    return NextResponse.json(result);
-  } catch (error) {
-    console.error('Error fetching result:', error);
-    return NextResponse.json({ error: 'Failed to fetch result' }, { status: 500 });
+export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const result = await getResultById(id);
+  if (!result) {
+    return NextResponse.json({ error: 'Result not found' }, { status: 404 });
   }
+  return NextResponse.json(result);
 }
